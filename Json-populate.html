@@ -1,0 +1,67 @@
+<!--DOCTYPE HTML -->
+<html>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+<script type="text/javascript" src="jquery-ui-map-3.0-rc/ui/jquery.ui.map.js"></script>
+<script>
+
+var markers = [
+
+  { 
+    "latitude":'15.543405', 
+    "longitude":'73.7862221', 
+    "title":"Devashri Gardens",
+    "content":"House" 
+  }, 
+  { 
+    "latitude":'15.5439123', 
+    "longitude":'73.5403299', 
+    "title":"Srijan Office", 
+    "content":"Drupal Solutions" 
+  } 
+  ];
+
+   window.onload = function () {
+        LoadMap();
+    }
+    function LoadMap() {
+      $.getJSON('goa.json',function(data) {  
+         $.each(data.markers, function(marker) { 
+        var mapOptions = {
+            center: new google.maps.LatLng(marker.latitude, marker.longitude),
+            zoom: 8,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var infoWindow = new google.maps.InfoWindow();
+        var latlngbounds = new google.maps.LatLngBounds();
+        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+ 
+        for (var i = 0; i < markers.length; i++) {
+            var data = markers[i]
+            var myLatlng = new google.maps.LatLng(data.latitude, data.longitude);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: data.title
+            });
+            (function (marker, data) {
+                google.maps.event.addListener(marker, "click", function (e) {
+                    infoWindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.description + "</div>");
+                    infoWindow.open(map, marker);
+                });
+            })(marker, data);
+            latlngbounds.extend(marker.position);
+        }
+        var bounds = new google.maps.LatLngBounds();
+        map.setCenter(latlngbounds.getCenter());
+        map.fitBounds(latlngbounds);
+    });
+        });
+}
+
+
+</script>
+<body>
+<div id="map_canvas" style="width: 300px; height: 400px"></div>
+  </body>
+</html>
