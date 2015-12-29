@@ -8,24 +8,32 @@
 
 var markerst = [
 
-  { 
-    "latitude":'15.543405', 
-    "longitude":'73.7862221', 
-    "title":"Devashri Gardens",
-    "content":"House" 
+  {
+    "latitude": '15.543405',
+    "longitude": '73.7862221',
+    "title": "Devashri",
+    "content": "House"
+  },
+  {
+    "latitude": '18.5203',
+    "longitude": '73.8567',
+    "title": "pune",
+    "content": "Home"
   }, 
-  { 
-    "latitude":'15.5439123', 
-    "longitude":'73.5403299', 
-    "title":"Srijan Office", 
-    "content":"Drupal Solutions" 
-  } 
+  {
+    "latitude": '15.5439123',
+    "longitude": '73.5403299',
+    "title": "Srijan Office",
+    "content": "Drupal Solutions"
+  }
   ];
 
    window.onload = function () {
         LoadMap();
     }
     function LoadMap() {
+      var searchButton = document.getElementById('searchbutton');
+      var searchText = document.getElementById('searchbar');
         var mapOptions = {
             center: new google.maps.LatLng(markerst[0].latitude, markerst[0].longitude),
             zoom: 8,
@@ -56,30 +64,27 @@ var markerst = [
         map.setCenter(latlngbounds.getCenter());
         map.fitBounds(latlngbounds);
 
-//for finding the data
-var searchButton = document.getElementById('search-button');
-var searchText = document.getElementById('search-bar');
 
-searchButton.click(function (e) { 
+
+  //for finding the Maker
+$('.searchButton').click(function () { 
 for(var j =0; j< markerst.length;j++ ) {
-  if(searchText.value == markerst[j].title) {
-   self = this;
-   var Latlng = new google.maps.LatLng(self.markerst[j].latitude, self.markerst[j].longitude);
-   var mapsd = new google.maps.Marker({
-    position: Latlng,
-    title: self.markerst[j].title,
-    zoom:10
-   }); 
+  if(searchText.value === markerst[j].title) {
+   map.setCenter(new google.maps.LatLng(markerst[j].latitude, markerst[j].longitude));
+   map.setZoom(15);
+  }
+  else {
+    map.setCenter(latlngbounds.getCenter());
+    map.setZoom(8);
   }
 }
 });
 }
 
-
 </script>
 <body>
 <div id="map_canvas" style="width: 300px; height: 400px"></div>
-<input type="text" id = "search-bar"/>
-<input type="button" id = "search-button" value="search"/>
+<input type="text" id = "searchbar"/>
+<input type="button" class = "searchbutton" value="SEARCHs"/>
   </body>
 </html>
