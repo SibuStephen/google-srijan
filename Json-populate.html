@@ -9,8 +9,8 @@
 var markerst = [
 
   {
-    "latitude": '15.543405',
-    "longitude": '73.7862221',
+    "latitude": '19.2108935',
+    "longitude": '72.9799676',
     "title": "Devashri",
     "content": "House"
   },
@@ -21,7 +21,7 @@ var markerst = [
     "content": "Home"
   }, 
   {
-    "latitude": '15.5439123',
+    "latitude": '72.9799676',
     "longitude": '73.5403299',
     "title": "Srijan Office",
     "content": "Drupal Solutions"
@@ -69,13 +69,9 @@ var markerst = [
   //for finding the Maker
 $('.searchButton').click(function () { 
 for(var j =0; j< markerst.length;j++ ) {
-  if(searchText.value === markerst[j].title) {
+  if(searchText.value === markerst[j].title) { 
    map.setCenter(new google.maps.LatLng(markerst[j].latitude, markerst[j].longitude));
    map.setZoom(15);
-  }
-  else {
-    map.setCenter(latlngbounds.getCenter());
-    map.setZoom(8);
   }
 }
 });
