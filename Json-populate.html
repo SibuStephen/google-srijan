@@ -11,19 +11,29 @@ var markerst = [
   {
     "latitude": '19.2108935',
     "longitude": '72.9799676',
-    "title": "Devashri",
+    "title": "Mumbai",
+    "position": "Maharashtra",
     "content": "House"
   },
   {
     "latitude": '18.5203',
     "longitude": '73.8567',
     "title": "pune",
+    "position": "Maharashtra",
+    "content": "Home"
+  }, 
+   {
+    "latitude": '20.0000',
+    "longitude": '73.7800',
+    "title": "Nasik",
+    "position": "Maharashtra",
     "content": "Home"
   }, 
   {
     "latitude": '72.9799676',
     "longitude": '73.5403299',
     "title": "Srijan Office",
+    "position":"Porvorim",
     "content": "Drupal Solutions"
   }
   ];
@@ -69,13 +79,18 @@ var markerst = [
   //for finding the Maker
 $('.searchButton').click(function () { 
 for(var j =0; j< markerst.length;j++ ) {
+  if(searchText.value === markerst[j].position) { 
+   map.setCenter(new google.maps.LatLng(markerst[j].latitude, markerst[j].longitude));
+   map.setZoom(6);
+ }
   if(searchText.value === markerst[j].title) { 
    map.setCenter(new google.maps.LatLng(markerst[j].latitude, markerst[j].longitude));
-   map.setZoom(15);
-  }
+   map.setZoom(10);
+}
 }
 });
 }
+
 
 </script>
 <body>
