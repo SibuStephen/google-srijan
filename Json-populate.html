@@ -1,101 +1,102 @@
 <!--DOCTYPE HTML -->
 
 <html>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-<script type="text/javascript" src="jquery-ui-map-3.0-rc/ui/jquery.ui.map.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+  <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&sensor=false"></script>
+  <body>
+   <input type="text" id="searchbar" placeholder="SEARCH"/>
+   <button class = "searchButton"/>Click Me</button>
+  <div id="map"></div>
+
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+      .searchbar {
+        float: right;
+      }
+    </style>
 <script>
-
-var markerst = [
-
-  {
-    "latitude": '19.2108935',
-    "longitude": '72.9799676',
-    "title": "Mumbai",
-    "position": "Maharashtra",
-    "content": "House"
-  },
-  {
-    "latitude": '18.5203',
-    "longitude": '73.8567',
-    "title": "pune",
-    "position": "Maharashtra",
-    "content": "Home"
-  }, 
-   {
-    "latitude": '20.0000',
-    "longitude": '73.7800',
-    "title": "Nasik",
-    "position": "Maharashtra",
-    "content": "Home"
-  }, 
-  {
-    "latitude": '72.9799676',
-    "longitude": '73.5403299',
-    "title": "Srijan Office",
-    "position":"Porvorim",
-    "content": "Drupal Solutions"
-  }
-  ];
-
-   window.onload = function () {
-        LoadMap();
+ window.onload = function () {
+        initAutocomplete();
     }
-    function LoadMap() {
-      var searchButton = document.getElementById('searchbutton');
-      var searchText = document.getElementById('searchbar');
-        var mapOptions = {
-            center: new google.maps.LatLng(markerst[0].latitude, markerst[0].longitude),
-            zoom: 8,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var infoWindow = new google.maps.InfoWindow();
-        var latlngbounds = new google.maps.LatLngBounds();
-        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
- 
-         //For populating the icon
-        for (var i = 0; i < markerst.length; i++) {
-            var data = markerst[i];
-            var myLatlng = new google.maps.LatLng(data.latitude, data.longitude);
-            var marker = new google.maps.Marker({
-                position: myLatlng,
-                map: map,
-                title: data.title
-            });
-            (function (markerq, data) {
-                google.maps.event.addListener(markerq, "click", function (e) {
-                    infoWindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.content + "</div>");
-                    infoWindow.open(map, markerq);
-                });
-            })(marker, data);
-            latlngbounds.extend(marker.position);
-        }
-        var bounds = new google.maps.LatLngBounds();
-        map.setCenter(latlngbounds.getCenter());
-        map.fitBounds(latlngbounds);
+function initAutocomplete() {
+  /*Setting map into the DOM*/
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -33.8688, lng: 151.2195},
+    zoom: 10,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
 
+  jQuery(".searchButton").click(function () {
+  // Create the search box and link it to the UI element.
+  var input = document.getElementById("searchbar");
+  var searchBox = new google.maps.places.SearchBox(input);
 
+  // Bias the SearchBox results towards current map's viewport.
 
-  //for finding the Maker
-$('.searchButton').click(function () { 
-for(var j =0; j< markerst.length;j++ ) {
-  if(searchText.value === markerst[j].position) { 
-   map.setCenter(new google.maps.LatLng(markerst[j].latitude, markerst[j].longitude));
-   map.setZoom(6);
- }
-  if(searchText.value === markerst[j].title) { 
-   map.setCenter(new google.maps.LatLng(markerst[j].latitude, markerst[j].longitude));
-   map.setZoom(10);
-}
-}
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  var markers = [];
+  // [START region_getplaces]
+  // Listen for the event fired when the user selects a prediction and retrieve
+  // more details for that place.
+  searchBox.addListener('places_changed', function() {
+    var places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }else {
+      map.setBounds();
+    }
+
+    // Clear out the old markers.
+    markers.forEach(function(marker) {
+      marker.setMap(null);
+    });
+    markers = [];
+
+    // For each place, get the icon, name and location.
+    var bounds = new google.maps.LatLngBounds();
+    places.forEach(function(place) {
+      var icon = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(20, 20)
+      };
+
+      // Create a marker for each place.
+      markers.push(new google.maps.Marker({
+        map: map,
+        icon: icon,
+        title: place.name,
+        position: place.geometry.location
+      }));
+
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    map.fitBounds(bounds);
+  });
 });
 }
-
-
 </script>
-<body>
-<div id="map_canvas" style="width: 300px; height: 400px"></div>
-<input type="text" id = "searchbar"/>
-<input type="button" class = "searchbutton" value="SEARCHs"/>
-  </body>
+    </body>
 </html>
