@@ -20,13 +20,14 @@ angular.module('maps-render',[])
   
   searchBox.addListener('places_changed', function() {
     var places = searchBox.getPlaces();
-
+ 
     markers.forEach(function(marker) {
       marker.setMap(null);
     });
     markers = [];
     // For each place, get the icon, name and location.
     var bounds = new google.maps.LatLngBounds();
+   
     places.forEach(function(place) {
       var icon = {
         url: place.icon,
@@ -36,14 +37,19 @@ angular.module('maps-render',[])
         scaledSize: new google.maps.Size(20, 20)
       };
       // Create a marker for each place.
-      
+      var infowindow = new google.maps.InfoWindow();
       markers.push(new google.maps.Marker({
         map: mapy,
         icon: icon,
         title: place.name,
         position: place.geometry.location
-      }));
-
+      })); markers.forEach(function(markerq) {
+                google.maps.event.addListener(markerq, "click", function (e) {
+                    // infowindow.setContent("<div style = 'width:200px;min-height:40px'>" +markerq.title + "</div>");
+                    // infowindow.open(map, markerq);
+                    alert("Place name - "+ markerq.title);
+                });
+            })
       if (place.geometry.viewport) {
         // Only geocodes have viewport.
         bounds.union(place.geometry.viewport);
