@@ -1,8 +1,8 @@
 angular.module('maps-render',[])
 .controller("MapRenderingController", function ($scope,$http) {
-   var bounds = new google.maps.LatLngBounds();
-   navigator.geolocation.getCurrentPosition(function(position) {
-        
+ var bounds = new google.maps.LatLngBounds();
+ navigator.geolocation.getCurrentPosition(function(position) {
+
   var geolocate = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   var myOptions = {
     center: geolocate,
@@ -22,37 +22,37 @@ angular.module('maps-render',[])
   var markers = [];
   // Listen for the event fired when the user selects a prediction and retrieve
   // more details for that place.
-  
+
   searchBox.addListener('places_changed', function() {
     var places = searchBox.getPlaces();
 
-  /*Marker Placement from json data*/
-   $http.get("goa-bikes.json").then(function(response) {
-        var er = response.data.Bikes;
-   
+    /*Marker Placement from json data*/
+    $http.get("goa-bikes.json").then(function(response) {
+      var er = response.data.Bikes;
 
-    for (var i = 0; i < er.length; i++) {
-            var data = er[i];
-            var myLatlng = new google.maps.LatLng(data.lat, data.long);
-            var marker = new google.maps.Marker({
-                position: myLatlng,
-                map: mapy,
-                title: data.title
-            });
-            (function (markerq, data) {
-                google.maps.event.addListener(markerq, "click", function (e) {
+
+      for (var i = 0; i < er.length; i++) {
+        var data = er[i];
+        var myLatlng = new google.maps.LatLng(data.lat, data.long);
+        var marker = new google.maps.Marker({
+          position: myLatlng,
+          map: mapy,
+          title: data.title
+        });
+        (function (markerq, data) {
+          google.maps.event.addListener(markerq, "click", function (e) {
                   // alert("Place name - "+ markerq.title);
-                    infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.Address + "</div>");
-                    infowindow.open(map, markerq);
+                  infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + data.Address + "</div>");
+                  infowindow.open(map, markerq);
                 });
-            })(marker, data);
-            bounds.extend(marker.position);
-        }
-        mapy.setCenter(bounds.getCenter());
-});
-   });
-    $scope.click_me = function() {
-      mapy.fitBounds(bounds);
-    }
+        })(marker, data);
+        bounds.extend(marker.position);
+      }
+      mapy.setCenter(bounds.getCenter());
+    });
   });
+  $scope.click_me = function() {
+    mapy.fitBounds(bounds);
+  }
+});
 });
