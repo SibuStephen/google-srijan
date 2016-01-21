@@ -12,11 +12,8 @@
     <div ng-controller="MapRenderingController">
    <input type="text" id="searchbar" placeholder="SEARCH"/>
    <button id="searchButton" ng-click="click_me()"/>Click Me</button>
-    <ul>
-      <li ng-repeat="x in myData">
-        {{ x.lat }}
-      </li>
-    </ul>
+    <input type="text" id="add_marker"/>
+    <button id="searchButton" ng-click="add_marker()"/>Add Address</button>
    <div id="map"  ng-model="maps" style="width: 100%;height:700px;">
    </div>
    </div>
