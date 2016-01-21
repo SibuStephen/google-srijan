@@ -47,7 +47,8 @@ angular.module('maps-render',[])
         var marker = new google.maps.Marker({
           position: myLatlng,
           map: mapy,
-          title: data.title
+          title: data.title,
+          zoom: 20
         });
         (function (markerq, data) {
           google.maps.event.addListener(markerq, "click", function (e) {
@@ -73,13 +74,20 @@ angular.module('maps-render',[])
                 var latitude = results[0].geometry.location.lat();
                 var longitude = results[0].geometry.location.lng();
             }
-        /*Setting the latitude and longitude on map as a marker*/
+  /*Setting the latitude and longitude on map as a marker*/
         var myLatlng = new google.maps.LatLng(latitude, longitude);
         var marker = new google.maps.Marker({
           position: myLatlng,
           map: mapy
         });
-   bounds.extend(marker.position);
+        (function (markerq, data) {
+          google.maps.event.addListener(markerq, "click", function (e) {
+                  infowindow.setContent("<div style = 'width:200px;min-height:40px'>" + address + "</div>");
+                  infowindow.open(mapy, markerq);
+                });
+        })(marker);
+        bounds.extend(marker.position);
+
   });
   }
 });
